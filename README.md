@@ -224,3 +224,120 @@ Load balancer operate in Two Layers
 2. Application Layer (Layer 7 Load Balancer): This is the load balancer that operates at the application layer, also known as layer 7. Load balancers can read requests in their entirety and perform content-based routing. This allows the management of load based on a full understanding of traffic.
 
 We have learnt about Loadbalancer and its type. Now we will learn different ways to route traffic using the Load balancer
+
+
+- **Round-robin**: Requests are distributed to application servers in rotation.
+- **Weighted Round-robin**: Builds on the simple Round-robin technique to account for differing server characteristics such as compute and traffic handling capacity using weights that can be assigned via DNS records by the administrator.
+- **Least Connections**: A new request is sent to the server with the fewest current connections to clients. The relative computing capacity of each server is factored into determining which one has the least connections.
+- **Least Response Time**: Sends requests to the server selected by a formula that combines the fastest response time and fewest active connections.
+- **Least Bandwidth**: This method measures traffic in megabits per second (Mbps), sending client requests to the server with the least Mbps of traffic.
+- **Hashing**: Distributes requests based on a key we define, such as the client IP address or the request URL.
+
+## Advantages
+
+Load balancing also plays a key role in preventing downtime, other advantages of load balancing include the following:
+
+- Scalability
+- Redundancy
+- Flexibility
+- Efficiency
+
+Now you might ask, what if my load balancer fails. It would be my single point of failure. To overcome this we will have redudant load balancers. A redudant Load Balancer is a second or `N` number of load balancers configured as a cluster mode.  if there's a failure detection and the _active_ load balancer fails, another _passive_ load balancer can take over which will make our system more fault-tolerant.
+
+When you are selecting a load balancer here are some of the commonly desired feature we need. Make sure to know how to configure this. We will learn more in coming section.
+
+- **Autoscaling**: Starting up and shutting down resources in response to demand conditions.
+- **Sticky sessions**: The ability to assign the same user or device to the same resource in order to maintain the session state on the resource.
+- **Healthchecks**: The ability to determine if a resource is down or performing poorly in order to remove the resource from the load balancing pool.
+- **Persistence connections**: Allowing a server to open a persistent connection with a client such as a WebSocket.
+- **Encryption**: Handling encrypted connections such as TLS and SSL.
+- **Certificates**: Presenting certificates to a client and authentication of client certificates.
+- **Compression**: Compression of responses.
+- **Caching**: An application-layer load balancer may offer the ability to cache responses.
+- **Logging**: Logging of request and response metadata can serve as an important audit trail or source for analytics data.
+- **Request tracing**: Assigning each request a unique id for the purposes of logging, monitoring, and troubleshooting.
+- **Redirects**: The ability to redirect an incoming request based on factors such as the requested path.
+- **Fixed response**: Returning a static response for a request such as an error message.
+
+## Examples
+
+Following are some of the load balancing solutions commonly used in the industry:
+
+- [Amazon Elastic Load Balancing](https://aws.amazon.com/elasticloadbalancing)
+- [Azure Load Balancing](https://azure.microsoft.com/en-in/services/load-balancer)
+- [GCP Load Balancing](https://cloud.google.com/load-balancing)
+- [DigitalOcean Load Balancer](https://www.digitalocean.com/products/load-balancer)
+- [Nginx](https://www.nginx.com)
+- [HAProxy](http://www.haproxy.org)
+
+While Explaining Redudant Load balancer, I used a word called clustering. We will learn about Clustering now.
+
+# Clustering
+
+At a high level, a computer cluster is a group of two or more computers, or nodes, that run in parallel to achieve a common goal. This allows workloads consisting of a high number of individual, parallelizable tasks to be distributed among the nodes in the cluster. As a result, these tasks can leverage the combined memory and processing power of each computer to increase overall performance.
+
+To build a computer cluster, the individual nodes should be connected to a network to enable internode communication. The software can then be used to join the nodes together and form a cluster. It may have a shared storage device and/or local storage on each node.
+
+Typically, at least one node is designated as the leader node and acts as the entry point to the cluster. The leader node may be responsible for delegating incoming work to the other nodes and, if necessary, aggregating the results and returning a response to the user.
+
+Ideally, a cluster functions as if it were a single system. A user accessing the cluster should not need to know whether the system is a cluster or an individual machine. Furthermore, a cluster should be designed to minimize latency and prevent bottlenecks in node-to-node communication.
+
+One good example is Spark Cluster, a Spark cluster consists of a Master node that coordinates the execution of tasks, and Worker nodes that perform the actual data processing. The Master manages resource allocation and task scheduling, while Workers execute tasks and return results to the Master.
+
+![spark-cluster](./images/spark_cluster.png)
+
+Computer clusters are generally classified into three types.
+
+1. Highly available clusters.
+2. Load Balancing
+3. High performace computing clusters
+
+The two most commonly used high availability (HA) clustering configurations are active-active and active-passive.
+
+## Active-Active Cluster
+An Active-Active cluster consist of atleast two nodes, all typically running the same services. The main aim of this clustering mode is to distribute the workload between the services. which is basically load balancing. Because there are more nodes available to serve, there will also be an improvement in throughput and response times.
+
+![active-active](./images/active-active.png)
+
+## Active-Passive Cluster
+An active-passive cluster also consists of at least two nodes. However, as the name active-passive implies, not all nodes are going to be active. For example, in the case of two nodes, if the first node is already active, then the second node must be passive or on standby. 
+
+![active-passive](./images/active-passive.png)
+
+## Advantages
+
+Four key advantages of cluster computing are as follows:
+
+- High availability
+- Scalability
+- Performance
+- Cost-effective
+
+## Load balancing vs Clustering
+
+Load balancing shares some common traits with clustering, but they are different processes. Clustering provides redundancy and boosts capacity and availability. Servers in a cluster are aware of each other and work together toward a common purpose. But with load balancing, servers are not aware of each other. Instead, they react to the requests they receive from the load balancer.
+
+We can employ load balancing in conjunction with clustering, but it also is applicable in cases involving independent servers that share a common purpose such as to run a website, business application, web service, or some other IT resource.
+
+## Challenges
+
+The most common challenges in clustering are
+
+1. Increased complexity of installation and maintenance. An operating system, the application, and its dependencies must each be installed and updated on every node.   
+2. storage becomes more difficult to manage, a shared storage device must prevent nodes from overwriting one another and distributed data stores have to be kept in sync.   
+3. Resource utilization for each node must also be closely monitored, and logs should be aggregated to ensure that the software is behaving correctly.
+
+Clustering is commonly used in the industry, and often many technologies offer some sort of clustering mode. For example:
+
+Containers (e.g. Kubernetes, Amazon ECS)
+Databases (e.g. Cassandra, MongoDB)
+Cache (e.g. Redis)
+
+# Load Balancing and Clustering in AWS
+
+Lets design two patterns in AWS. 
+
+1. High Available, Scalable and Cost effective Instances.
+2. High Performance Clusters
+
+## High Available, Scalable and Cost effective Instances.
