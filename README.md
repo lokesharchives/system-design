@@ -341,3 +341,29 @@ Lets design two patterns in AWS.
 2. High Performance Clusters
 
 ## High Available, Scalable and Cost effective Instances.
+
+Lets assume we have a webapp in a ec2 instance. We wanted to make it scalable. To make it scalable we need to make the ec2 instance auto scalable based on demand. To do that we will Auto Scaling Group (ASG). 
+
+To start with ASG we need to create a launch configuration. The launch conifguration will have instance information (EC2 instance type, AMI, Security Group, Key pair, VPC Network informations etc.,)
+
+Once we define a launch configuration we will create a ASG Configuration which define desired number of tasks, min and maximum number of tasks, Availability zone and health checks
+
+![asg-scaling](./images/asg-scaling.png)
+
+Now we need to define scaling policies. There are two types of scaling policy 
+
+- Dynamic Scaling: Configure dynamic scaling policies to automatically scale out (add instances) or scale in (remove instances) based on CloudWatch metrics such as CPU utilization, network traffic, or custom metrics.
+    - Target Tracking: Set a target metric (e.g., maintain CPU utilization at 60%), and ASG will adjust the number of instances to meet this target.
+    - Step Scaling: Define specific thresholds and actions (e.g., add 2 instances if CPU usage exceeds 70%).
+- Scheduled Scaling: Set up scheduled scaling to add or remove instances based on predictable workload patterns (e.g., scaling up during business hours).
+
+![asg-alarm](./images/asg-alarm.png)
+
+Load Balancer Integration: Attach an Elastic Load Balancer (ELB) to the ASG to distribute incoming traffic evenly across instances. ELB ensures that as the number of instances changes, traffic is routed to healthy instances, maintaining high availability
+
+Cost Optimization:
+- Use Spot Instances: For cost-effective scaling, consider using a mix of On-Demand and Spot Instances in your ASG. Spot Instances can reduce costs but may be interrupted, so they’re best used for fault-tolerant workloads. 
+
+![spot-instances](./images/stateless-web-application-architecture.png)
+
+- Instance Refresh: Use instance refresh to update your instances (e.g., with new AMIs) without taking down your entire cluster.
